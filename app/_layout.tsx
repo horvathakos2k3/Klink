@@ -4,6 +4,7 @@ export default function RootLayout() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ title: "Klink" }} />
+       <Stack.Screen name="items" options={{ title: "Tételek" }} />
     </Stack>
   );
 }
