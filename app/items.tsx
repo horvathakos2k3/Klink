@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ScrollView,
@@ -7,14 +8,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ItemRow from "../components/ItemRow";
 import { useTrip } from "../context/TripContext";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 
 export default function ItemsScreen() {
-  const { people, items, addItem, updateItem, removeItem } = useTrip();
-const insets = useSafeAreaInsets();
+  const { people, items, addItem, updateItem, removeItem, t } = useTrip();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -23,7 +24,7 @@ const insets = useSafeAreaInsets();
   const [shareMode, setShareMode] = useState<"all" | "some">("all");
   const [selected, setSelected] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const router = useRouter();
+
   function toggleSelected(person: string) {
     if (selected.includes(person)) {
       setSelected(selected.filter((p) => p !== person));
@@ -83,22 +84,19 @@ const insets = useSafeAreaInsets();
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 24 }]}
-    >
-      <Text style={styles.title}>What did you buy?</Text>
+    <ScrollView style={styles.container} contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 24 }]}>
+      <Text style={styles.title}>{t("itemsTitle")}</Text>
 
       <View style={styles.row}>
         <TextInput
           style={[styles.input, styles.flex2]}
-          placeholder="Item name"
+          placeholder={t("itemNamePlaceholder")}
           value={name}
           onChangeText={setName}
         />
         <TextInput
           style={[styles.input, styles.flex1]}
-          placeholder="Qty"
+          placeholder={t("qtyPlaceholder")}
           value={quantity}
           onChangeText={setQuantity}
           keyboardType="numeric"
@@ -108,15 +106,15 @@ const insets = useSafeAreaInsets();
       <View style={styles.priceRow}>
         <TextInput
           style={[styles.input, styles.flex1]}
-          placeholder="Price"
+          placeholder={t("pricePlaceholder")}
           value={price}
           onChangeText={setPrice}
           keyboardType="numeric"
         />
-        <Text style={styles.currency}>lei</Text>
+        <Text style={styles.currency}>{t("currency")}</Text>
       </View>
 
-      <Text style={styles.label}>Who paid?</Text>
+      <Text style={styles.label}>{t("whoPaid")}</Text>
       <View style={styles.chipRow}>
         {people.map((person) => (
           <TouchableOpacity
@@ -131,14 +129,14 @@ const insets = useSafeAreaInsets();
         ))}
       </View>
 
-      <Text style={styles.label}>Who shares it?</Text>
+      <Text style={styles.label}>{t("whoShares")}</Text>
       <View style={styles.segment}>
         <TouchableOpacity
           style={[styles.segmentButton, shareMode === "all" && styles.segmentActive]}
           onPress={() => setShareMode("all")}
         >
           <Text style={[styles.segmentText, shareMode === "all" && styles.segmentTextActive]}>
-            Everyone
+            {t("everyone")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -146,7 +144,7 @@ const insets = useSafeAreaInsets();
           onPress={() => setShareMode("some")}
         >
           <Text style={[styles.segmentText, shareMode === "some" && styles.segmentTextActive]}>
-            Selected
+            {t("selected")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -159,9 +157,7 @@ const insets = useSafeAreaInsets();
               style={[styles.chip, selected.includes(person) && styles.chipActive]}
               onPress={() => toggleSelected(person)}
             >
-              <Text
-                style={[styles.chipText, selected.includes(person) && styles.chipTextActive]}
-              >
+              <Text style={[styles.chipText, selected.includes(person) && styles.chipTextActive]}>
                 {person}
               </Text>
             </TouchableOpacity>
@@ -171,22 +167,19 @@ const insets = useSafeAreaInsets();
 
       <TouchableOpacity style={styles.addButton} onPress={handleSave}>
         <Text style={styles.addButtonText}>
-          {editingId === null ? "+ Add item" : "Save changes"}
+          {editingId === null ? t("addItem") : t("saveChanges")}
         </Text>
       </TouchableOpacity>
 
       {items.length > 0 && (
-        <TouchableOpacity
-          style={styles.calcButton}
-          onPress={() => router.push("/results")}
-        >
-          <Text style={styles.addButtonText}>Calculate</Text>
+        <TouchableOpacity style={styles.calcButton} onPress={() => router.push("/results")}>
+          <Text style={styles.addButtonText}>{t("calculate")}</Text>
         </TouchableOpacity>
       )}
 
       {items.length > 0 && (
         <View style={styles.listSection}>
-          <Text style={styles.label}>Items ({items.length})</Text>
+          <Text style={styles.label}>{t("itemsCount")} ({items.length})</Text>
           {items.map((item) => (
             <ItemRow
               key={item.id}
@@ -248,18 +241,15 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
     marginTop: 4,
-    marginBottom: 24,
+    marginBottom: 12,
   },
   addButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  listSection: { marginTop: 4 },
-
-
-calcButton: {
+  calcButton: {
     backgroundColor: "#0F6E56",
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
-    marginTop: 8,
+    marginBottom: 24,
   },
-
+  listSection: { marginTop: 4 },
 });

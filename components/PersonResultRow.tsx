@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTrip } from "../context/TripContext";
 import { Balance, ShareLine } from "../logic/settle";
 
 export default function PersonResultRow({
@@ -11,6 +12,7 @@ export default function PersonResultRow({
   remaining: number;
   shares: ShareLine[];
 }) {
+  const { t } = useTrip();
   const [expanded, setExpanded] = useState(false);
   const isSettled = remaining === 0;
   const positive = remaining >= 0;
@@ -27,10 +29,10 @@ export default function PersonResultRow({
             ]}
           >
             {isSettled
-              ? "settled"
+              ? t("settled")
               : positive
-              ? `gets ${remaining} lei`
-              : `pays ${-remaining} lei`}
+              ? `${t("gets")} ${remaining} ${t("currency")}`
+              : `${t("pays")} ${-remaining} ${t("currency")}`}
           </Text>
           <Text style={styles.chevron}>{expanded ? "▲" : "▼"}</Text>
         </View>
@@ -39,16 +41,16 @@ export default function PersonResultRow({
       {expanded && (
         <View style={styles.details}>
           <Text style={styles.detailLine}>
-            Paid in total: {balance.paid.toFixed(2)} lei
+            {t("paidInTotal")}: {balance.paid.toFixed(2)} {t("currency")}
           </Text>
           <Text style={styles.detailLine}>
-            Own share total: {balance.owed.toFixed(2)} lei
+            {t("ownShareTotal")}: {balance.owed.toFixed(2)} {t("currency")}
           </Text>
-          {shares.length > 0 && <Text style={styles.subHeader}>Shares:</Text>}
+          {shares.length > 0 && <Text style={styles.subHeader}>{t("shares")}:</Text>}
           {shares.map((s, i) => (
             <View key={i} style={styles.shareLine}>
               <Text style={styles.shareName}>{s.itemName}</Text>
-              <Text style={styles.shareAmount}>{s.share.toFixed(2)} lei</Text>
+              <Text style={styles.shareAmount}>{s.share.toFixed(2)} {t("currency")}</Text>
             </View>
           ))}
         </View>

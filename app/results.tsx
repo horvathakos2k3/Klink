@@ -9,23 +9,21 @@ import {
 } from "../logic/settle";
 
 export default function ResultsScreen() {
-  const { people, items, settledTransfers, toggleSettled } = useTrip();
+  const { people, items, settledTransfers, toggleSettled, t } = useTrip();
   const insets = useSafeAreaInsets();
 
   const balances = computeBalances(people, items);
   const transfers = computeTransfers(balances);
 
-  const openTransfers = transfers.filter(
-    (t) => !settledTransfers.includes(t.key)
-  );
+  const openTransfers = transfers.filter((tr) => !settledTransfers.includes(tr.key));
   const allSettled = transfers.length > 0 && openTransfers.length === 0;
 
   function remainingFor(person: string): number {
     let remaining = 0;
-    for (const t of transfers) {
-      if (settledTransfers.includes(t.key)) continue;
-      if (t.from === person) remaining -= Math.ceil(t.amount);
-      if (t.to === person) remaining += Math.ceil(t.amount);
+    for (const tr of transfers) {
+      if (settledTransfers.includes(tr.key)) continue;
+      if (tr.from === person) remaining -= Math.ceil(tr.amount);
+      if (tr.to === person) remaining += Math.ceil(tr.amount);
     }
     return remaining;
   }
@@ -35,37 +33,37 @@ export default function ResultsScreen() {
       style={styles.container}
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 24 }]}
     >
-      <Text style={styles.title}>Who pays what?</Text>
+      <Text style={styles.title}>{t("resultsTitle")}</Text>
 
       {allSettled && (
         <View style={styles.settledBanner}>
-          <Text style={styles.settledBannerText}>All settled up! 🎉</Text>
+          <Text style={styles.settledBannerText}>{t("allSettled")}</Text>
         </View>
       )}
 
-      <Text style={styles.sectionLabel}>Transfers</Text>
+      <Text style={styles.sectionLabel}>{t("transfers")}</Text>
       {transfers.length === 0 ? (
-        <Text style={styles.empty}>Everyone is settled up.</Text>
+        <Text style={styles.empty}>{t("everyoneSettled")}</Text>
       ) : (
         <View style={styles.transferBox}>
-          {transfers.map((t) => {
-            const settled = settledTransfers.includes(t.key);
+          {transfers.map((tr) => {
+            const settled = settledTransfers.includes(tr.key);
             return (
-              <View key={t.key} style={styles.transferRow}>
+              <View key={tr.key} style={styles.transferRow}>
                 <View style={styles.transferLeft}>
                   <Text style={[styles.transferText, settled && styles.struck]}>
-                    {t.from} → {t.to}
+                    {tr.from} → {tr.to}
                   </Text>
                   <Text style={[styles.transferAmount, settled && styles.struck]}>
-                    {Math.ceil(t.amount)} lei
+                    {Math.ceil(tr.amount)} {t("currency")}
                   </Text>
                 </View>
                 <TouchableOpacity
                   style={[styles.checkButton, settled && styles.checkButtonDone]}
-                  onPress={() => toggleSettled(t.key)}
+                  onPress={() => toggleSettled(tr.key)}
                 >
                   <Text style={[styles.checkText, settled && styles.checkTextDone]}>
-                    {settled ? "✓ Paid" : "Mark paid"}
+                    {settled ? t("paid") : t("markPaid")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -74,7 +72,7 @@ export default function ResultsScreen() {
         </View>
       )}
 
-      <Text style={styles.sectionLabel}>Per person</Text>
+      <Text style={styles.sectionLabel}>{t("perPerson")}</Text>
       {balances.map((b) => (
         <PersonResultRow
           key={b.person}

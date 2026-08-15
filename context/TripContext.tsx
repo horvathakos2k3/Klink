@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import { translations, Language, TranslationKey } from "../i18n/translations";
 
 export type Item = {
   id: string;
@@ -13,12 +14,15 @@ type TripContextType = {
   people: string[];
   addPerson: (name: string) => void;
   removePerson: (index: number) => void;
-items: Item[];
+  items: Item[];
   addItem: (item: Omit<Item, "id">) => void;
   updateItem: (id: string, item: Omit<Item, "id">) => void;
   removeItem: (id: string) => void;
   settledTransfers: string[];
   toggleSettled: (transferKey: string) => void;
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: TranslationKey) => string;
 };
 
 const TripContext = createContext<TripContextType | undefined>(undefined);
@@ -27,6 +31,11 @@ export function TripProvider({ children }: { children: ReactNode }) {
   const [people, setPeople] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [settledTransfers, setSettledTransfers] = useState<string[]>([]);
+  const [language, setLanguage] = useState<Language>("en");
+
+  function t(key: TranslationKey): string {
+    return translations[language][key];
+  }
 
   function toggleSettled(transferKey: string) {
     setSettledTransfers((prev) =>
@@ -63,7 +72,7 @@ export function TripProvider({ children }: { children: ReactNode }) {
 
   return (
     <TripContext.Provider
-    value={{
+      value={{
         people,
         addPerson,
         removePerson,
@@ -73,7 +82,11 @@ export function TripProvider({ children }: { children: ReactNode }) {
         removeItem,
         settledTransfers,
         toggleSettled,
-      }}>
+        language,
+        setLanguage,
+        t,
+      }}
+    >
       {children}
     </TripContext.Provider>
   );

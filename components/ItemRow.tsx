@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Item } from "../context/TripContext";
+import { Item, useTrip } from "../context/TripContext";
 
 export default function ItemRow({
   item,
@@ -11,17 +11,15 @@ export default function ItemRow({
   onEdit: () => void;
   onRemove: () => void;
 }) {
+  const { t } = useTrip();
   const [expanded, setExpanded] = useState(false);
 
   return (
     <View style={styles.card}>
-      <TouchableOpacity
-        style={styles.header}
-        onPress={() => setExpanded(!expanded)}
-      >
+      <TouchableOpacity style={styles.header} onPress={() => setExpanded(!expanded)}>
         <Text style={styles.name}>{item.name}</Text>
         <View style={styles.headerRight}>
-          <Text style={styles.price}>{item.price} lei</Text>
+          <Text style={styles.price}>{item.price} {t("currency")}</Text>
           <Text style={styles.chevron}>{expanded ? "▲" : "▼"}</Text>
         </View>
       </TouchableOpacity>
@@ -29,18 +27,18 @@ export default function ItemRow({
       {expanded && (
         <View style={styles.details}>
           {item.quantity !== "" && (
-            <Text style={styles.detailLine}>Quantity: {item.quantity}</Text>
+            <Text style={styles.detailLine}>{t("quantity")}: {item.quantity}</Text>
           )}
-          <Text style={styles.detailLine}>Paid by: {item.paidBy}</Text>
+          <Text style={styles.detailLine}>{t("paidBy")}: {item.paidBy}</Text>
           <Text style={styles.detailLine}>
-            Shared by: {item.sharedBy.join(", ")}
+            {t("sharedBy")}: {item.sharedBy.join(", ")}
           </Text>
-<View style={styles.actions}>
+          <View style={styles.actions}>
             <TouchableOpacity onPress={onEdit}>
-              <Text style={styles.edit}>Edit</Text>
+              <Text style={styles.edit}>{t("edit")}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onRemove}>
-              <Text style={styles.remove}>Remove</Text>
+              <Text style={styles.remove}>{t("remove")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -76,7 +74,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   detailLine: { fontSize: 13, color: "#666" },
- actions: { flexDirection: "row", gap: 20, marginTop: 8 },
+  actions: { flexDirection: "row", gap: 20, marginTop: 8 },
   edit: { fontSize: 13, color: "#0F6E56", fontWeight: "500" },
   remove: { fontSize: 13, color: "#A32D2D", fontWeight: "500" },
 });

@@ -1,6 +1,5 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
   StyleSheet,
@@ -9,11 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTrip } from "../context/TripContext";
+import { Language } from "../i18n/translations";
+
+const LANGUAGES: Language[] = ["en", "hu", "ro"];
 
 export default function PeopleScreen() {
   const router = useRouter();
-  const { people, addPerson, removePerson } = useTrip();
+  const { people, addPerson, removePerson, language, setLanguage, t } = useTrip();
   const insets = useSafeAreaInsets();
   const [name, setName] = useState("");
 
@@ -26,13 +29,29 @@ export default function PeopleScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Who was there?</Text>
-      <Text style={styles.subtitle}>Add everyone's name.</Text>
+      <View style={styles.langRow}>
+        {LANGUAGES.map((lang) => (
+          <TouchableOpacity
+            key={lang}
+            style={[styles.langButton, language === lang && styles.langButtonActive]}
+            onPress={() => setLanguage(lang)}
+          >
+            <Text
+              style={[styles.langText, language === lang && styles.langTextActive]}
+            >
+              {lang.toUpperCase()}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.title}>{t("peopleTitle")}</Text>
+      <Text style={styles.subtitle}>{t("peopleSubtitle")}</Text>
 
       <View style={styles.inputRow}>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder={t("namePlaceholder")}
           value={name}
           onChangeText={setName}
           onSubmitEditing={handleAdd}
@@ -56,7 +75,7 @@ export default function PeopleScreen() {
         )}
       />
 
-<TouchableOpacity
+      <TouchableOpacity
         style={[
           styles.nextButton,
           { marginBottom: insets.bottom + 12 },
@@ -65,7 +84,7 @@ export default function PeopleScreen() {
         onPress={() => router.push("/items")}
         disabled={!canContinue}
       >
-        <Text style={styles.nextButtonText}>Next</Text>
+        <Text style={styles.nextButtonText}>{t("next")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -73,6 +92,17 @@ export default function PeopleScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  langRow: { flexDirection: "row", gap: 8, marginBottom: 16 },
+  langButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  langButtonActive: { backgroundColor: "#0F6E56", borderColor: "#0F6E56" },
+  langText: { fontSize: 13, color: "#333", fontWeight: "500" },
+  langTextActive: { color: "#fff" },
   title: { fontSize: 24, fontWeight: "600" },
   subtitle: { fontSize: 14, color: "#666", marginTop: 4, marginBottom: 20 },
   inputRow: { flexDirection: "row", gap: 8, marginBottom: 20 },
