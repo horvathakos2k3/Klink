@@ -1,50 +1,30 @@
-# Welcome to your Expo app 👋
+# Klink
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple mobile app for splitting shared expenses. After a weekend trip or a group shopping run, everyone enters what they bought and how it should be split, and Klink calculates exactly who owes whom — with the fewest possible transfers.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Add participants and record expenses (name, quantity, price, who paid)
+- Split each item between everyone or a selected subset
+- Automatic balance calculation and minimal settlement transfers
+- Mark transfers as paid — the app tracks what's left and shows when everyone is settled
+- Available in English, Hungarian and Romanian
 
-   ```bash
-   npm install
-   ```
+## Tech stack
 
-2. Start the app
+- **Frontend:** Expo (React Native) with TypeScript and expo-router
+- **State:** React Context
+- **Architecture:** layered, MVVM-inspired — screens (View), hooks (ViewModel), a pure calculation module (domain logic)
 
-   ```bash
-   npx expo start
-   ```
+## Try it
 
-In the output, you'll find options to open the app in a
+Download the latest Android APK from the [Releases](../../releases) page, open it on your phone, and allow installation from unknown sources when prompted.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Run locally
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Then open the project in Expo Go, or run a development build.
