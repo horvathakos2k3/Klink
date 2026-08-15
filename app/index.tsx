@@ -8,39 +8,34 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useTrip } from "../context/TripContext";
 
 export default function PeopleScreen() {
   const router = useRouter();
-  const [people, setPeople] = useState<string[]>([]);
+  const { people, addPerson, removePerson } = useTrip();
   const [name, setName] = useState("");
 
-  function addPerson() {
-    const trimmed = name.trim();
-    if (trimmed === "") return;
-    setPeople([...people, trimmed]);
+  function handleAdd() {
+    addPerson(name);
     setName("");
-  }
-
-  function removePerson(indexToRemove: number) {
-    setPeople(people.filter((_, index) => index !== indexToRemove));
   }
 
   const canContinue = people.length >= 2;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Kik voltak?</Text>
-      <Text style={styles.subtitle}>Add meg mindenki nevét.</Text>
+      <Text style={styles.title}>Who was there?</Text>
+      <Text style={styles.subtitle}>Add everyone's name.</Text>
 
       <View style={styles.inputRow}>
         <TextInput
           style={styles.input}
-          placeholder="Név"
+          placeholder="Name"
           value={name}
           onChangeText={setName}
-          onSubmitEditing={addPerson}
+          onSubmitEditing={handleAdd}
         />
-        <TouchableOpacity style={styles.addButton} onPress={addPerson}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -64,7 +59,7 @@ export default function PeopleScreen() {
         onPress={() => router.push("/items")}
         disabled={!canContinue}
       >
-        <Text style={styles.nextButtonText}>Tovább</Text>
+        <Text style={styles.nextButtonText}>Next</Text>
       </TouchableOpacity>
     </View>
   );
