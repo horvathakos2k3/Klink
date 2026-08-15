@@ -10,6 +10,7 @@ import {
 import ItemRow from "../components/ItemRow";
 import { useTrip } from "../context/TripContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 export default function ItemsScreen() {
   const { people, items, addItem, updateItem, removeItem } = useTrip();
@@ -22,7 +23,7 @@ const insets = useSafeAreaInsets();
   const [shareMode, setShareMode] = useState<"all" | "some">("all");
   const [selected, setSelected] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-
+  const router = useRouter();
   function toggleSelected(person: string) {
     if (selected.includes(person)) {
       setSelected(selected.filter((p) => p !== person));
@@ -175,6 +176,15 @@ const insets = useSafeAreaInsets();
       </TouchableOpacity>
 
       {items.length > 0 && (
+        <TouchableOpacity
+          style={styles.calcButton}
+          onPress={() => router.push("/results")}
+        >
+          <Text style={styles.addButtonText}>Calculate</Text>
+        </TouchableOpacity>
+      )}
+
+      {items.length > 0 && (
         <View style={styles.listSection}>
           <Text style={styles.label}>Items ({items.length})</Text>
           {items.map((item) => (
@@ -242,4 +252,14 @@ const styles = StyleSheet.create({
   },
   addButtonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
   listSection: { marginTop: 4 },
+
+
+calcButton: {
+    backgroundColor: "#0F6E56",
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 8,
+  },
+
 });

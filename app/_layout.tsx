@@ -9,6 +9,7 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="index" options={{ title: "Klink" }} />
           <Stack.Screen name="items" options={{ title: "Items" }} />
+          <Stack.Screen name="results" options={{ title: "Results" }} />
         </Stack>
       </TripProvider>
     </SafeAreaProvider>

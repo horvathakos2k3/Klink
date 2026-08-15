@@ -13,10 +13,12 @@ type TripContextType = {
   people: string[];
   addPerson: (name: string) => void;
   removePerson: (index: number) => void;
-  items: Item[];
+items: Item[];
   addItem: (item: Omit<Item, "id">) => void;
   updateItem: (id: string, item: Omit<Item, "id">) => void;
   removeItem: (id: string) => void;
+  settledTransfers: string[];
+  toggleSettled: (transferKey: string) => void;
 };
 
 const TripContext = createContext<TripContextType | undefined>(undefined);
@@ -24,6 +26,15 @@ const TripContext = createContext<TripContextType | undefined>(undefined);
 export function TripProvider({ children }: { children: ReactNode }) {
   const [people, setPeople] = useState<string[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+  const [settledTransfers, setSettledTransfers] = useState<string[]>([]);
+
+  function toggleSettled(transferKey: string) {
+    setSettledTransfers((prev) =>
+      prev.includes(transferKey)
+        ? prev.filter((k) => k !== transferKey)
+        : [...prev, transferKey]
+    );
+  }
 
   function addPerson(name: string) {
     const trimmed = name.trim();
@@ -52,7 +63,17 @@ export function TripProvider({ children }: { children: ReactNode }) {
 
   return (
     <TripContext.Provider
-    value={{ people, addPerson, removePerson, items, addItem, updateItem, removeItem }}    >
+    value={{
+        people,
+        addPerson,
+        removePerson,
+        items,
+        addItem,
+        updateItem,
+        removeItem,
+        settledTransfers,
+        toggleSettled,
+      }}>
       {children}
     </TripContext.Provider>
   );
