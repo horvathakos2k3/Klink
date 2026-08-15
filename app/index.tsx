@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   FlatList,
   StyleSheet,
@@ -13,6 +14,7 @@ import { useTrip } from "../context/TripContext";
 export default function PeopleScreen() {
   const router = useRouter();
   const { people, addPerson, removePerson } = useTrip();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState("");
 
   function handleAdd() {
@@ -54,8 +56,12 @@ export default function PeopleScreen() {
         )}
       />
 
-      <TouchableOpacity
-        style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
+<TouchableOpacity
+        style={[
+          styles.nextButton,
+          { marginBottom: insets.bottom + 12 },
+          !canContinue && styles.nextButtonDisabled,
+        ]}
         onPress={() => router.push("/items")}
         disabled={!canContinue}
       >
